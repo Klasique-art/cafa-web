@@ -1,0 +1,35 @@
+version: 1.0.5
+cache: true
+
+endpoints:
+  custom:
+    - name: "Ollama"
+      apiKey: "ollama"
+      baseURL: "http://host.docker.internal:11434/v1"
+      models:
+        default:
+          - "qwen:latest"
+          - "qwen2.5:7b"
+          - "qwen2.5:14b"
+          - "qwen3:8b"
+          - "qwen3:30b"
+          - "deepseek-coder:6.7b-instruct"
+          - "deepseek-r1:8b"
+          - "mistral:latest"
+          - "mixtral:latest"
+          - "gemma3:1b"
+          - "gemma3:4b"
+          - "gemma3:12b"
+          - "gemma3n:latest"
+        fetch: false
+      titleConvo: true
+      titleModel: "qwen:latest"
+      summarize: false
+      summaryModel: "qwen:latest"
+      forcePrompt: false
+      modelDisplayLabel: "Ollama"
+
+interface:
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true

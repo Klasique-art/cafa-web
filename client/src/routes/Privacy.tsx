@@ -1,0 +1,235 @@
+import React, { useEffect, useState } from 'react';
+import { policies } from '~/staticData';
+
+const Privacy: React.FC = () => {
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections(prev => new Set([...prev, entry.target.id]));
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px -50px 0px'
+      }
+    );
+
+    const sections = document.querySelectorAll('[data-section]');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
+  const handleBack = () => {
+    window.history.back();
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Fixed Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <button
+            onClick={handleBack}
+            className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-300 group"
+            aria-label="Go back"
+          >
+            <svg 
+              className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="font-medium">Back</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section - added pt-20 for navbar spacing */}
+      <div className="relative overflow-hidden pt-20">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+          <div className="absolute -bottom-8 left-1/3 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
+        </div>
+        
+        <div className="relative max-w-4xl mx-auto px-6 py-24 text-center">
+          <h1 
+            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent animate-fade-in"
+            style={{ 
+              animationDelay: '0.2s',
+              animationFillMode: 'both'
+            }}
+          >
+            Privacy Policy
+          </h1>
+          <div 
+            className="w-24 h-1 bg-gradient-to-r from-purple-400 to-purple-600 mx-auto mb-8 animate-slide-in"
+            style={{ 
+              animationDelay: '0.4s',
+              animationFillMode: 'both'
+            }}
+          ></div>
+          <p 
+            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed animate-fade-in-up"
+            style={{ 
+              animationDelay: '0.6s',
+              animationFillMode: 'both'
+            }}
+          >
+            At <span className="text-purple-400 font-semibold">CAFA AI</span>, we are committed to protecting your privacy and ensuring transparency in how we collect, use, and safeguard your personal information.
+          </p>
+          <div 
+            className="mt-8 text-sm text-gray-400 animate-fade-in-up"
+            style={{ 
+              animationDelay: '0.8s',
+              animationFillMode: 'both'
+            }}
+          >
+            Last updated: {new Date().toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-6 pb-24">
+        <div className="space-y-16">
+          {policies.map((policy, index) => (
+            <section
+              key={policy.id}
+              id={policy.id}
+              data-section
+              className={`transition-all duration-1000 ease-out ${
+                visibleSections.has(policy.id)
+                  ? 'opacity-100 transform translate-y-0'
+                  : 'opacity-0 transform translate-y-8'
+              }`}
+              style={{ 
+                transitionDelay: `${index * 0.1}s`
+              }}
+            >
+              {/* Section Header */}
+              <div className="mb-8">
+                <div className="flex items-center mb-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center mr-4 shadow-lg">
+                    <span className="text-white font-bold text-sm">
+                      {(index + 1).toString().padStart(2, '0')}
+                    </span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white">
+                    {policy.title}
+                  </h2>
+                </div>
+                <div className="ml-12 w-16 h-0.5 bg-gradient-to-r from-purple-400 to-transparent"></div>
+              </div>
+
+              {/* Section Content */}
+              <div className="ml-12 space-y-6">
+                {policy.content.map((paragraph, paragraphIndex) => (
+                  <div
+                    key={paragraphIndex}
+                    className={`transition-all duration-700 ease-out ${
+                      visibleSections.has(policy.id)
+                        ? 'opacity-100 transform translate-x-0'
+                        : 'opacity-0 transform translate-x-4'
+                    }`}
+                    style={{ 
+                      transitionDelay: `${(index * 0.1) + (paragraphIndex * 0.1) + 0.2}s`
+                    }}
+                  >
+                    <p className="text-gray-300 leading-relaxed text-lg hover:text-gray-200 transition-colors duration-300 pl-4 border-l border-gray-700 hover:border-purple-400 hover:pl-6 transition-all duration-300">
+                      {paragraph}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-in {
+          from {
+            opacity: 0;
+            width: 0;
+          }
+          to {
+            opacity: 1;
+            width: 6rem;
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 1s ease-out;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 1s ease-out;
+        }
+
+        .animate-slide-in {
+          animation: slide-in 1s ease-out;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: #1f2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: #6366f1;
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: #8b5cf6;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default Privacy;
